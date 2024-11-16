@@ -1,7 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/iscritic/archive-api/internal/handlers"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	router := gin.Default()
+
+	api := router.Group("/api")
+	{
+		archive := api.Group("/archive")
+		{
+			archive.POST("/information", handlers.GetArchiveInformation)
+			archive.POST("/files", handlers.CreateArchive)
+		}
+
+	}
+
+	router.Run(":8080")
 }
