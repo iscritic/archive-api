@@ -1,0 +1,14 @@
+env: local
+
+http_server:
+  address: localhost
+  port: 8082
+  timeout: 4s
+  idle_timeout: 60s
+
+smtp:
+  host: smtp.example.com
+  port: 587
+  user: your_email@example.com
+  password: ${SMTP_PASSWORD}
+  sender: your_email@example.com

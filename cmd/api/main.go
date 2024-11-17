@@ -1,22 +1,28 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/iscritic/archive-api/internal/handlers"
+	"github.com/iscritic/archive-api/internal/config"
+	"github.com/iscritic/archive-api/internal/server"
+	"github.com/joho/godotenv"
+	"log"
+	"log/slog"
 )
 
 func main() {
-	router := gin.Default()
 
-	api := router.Group("/api")
-	{
-		archive := api.Group("/archive")
-		{
-			archive.POST("/information", handlers.GetArchiveInformation)
-			archive.POST("/files", handlers.CreateArchive)
-		}
-
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file found or error loading .env")
 	}
 
-	router.Run(":8080")
+	cfg := config.MustLoad()
+
+	srv := server.NewServer(cfg)
+
+	slog.Info("Starting API server...")
+	err = srv.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
