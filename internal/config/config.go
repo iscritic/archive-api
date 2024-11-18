@@ -22,10 +22,10 @@ type HTTPServer struct {
 }
 
 type SMTPConfig struct {
-	Host     string `yaml:"host" env:"SMTP_HOST" env-default:"smtp.example.com"`
+	Host     string `yaml:"host" env:"SMTP_HOST" required:"true"`
 	Port     int    `yaml:"port" env:"SMTP_PORT" env-default:"587"`
-	User     string `yaml:"user" env:"SMTP_USER" env-default:"your_email@example.com"`
-	Password string `yaml:"password" env:"SMTP_PASSWORD"`
+	User     string `yaml:"user" env:"SMTP_USER" required:"true"`
+	Password string `yaml:"password" env:"SMTP_PASSWORD" required:"true"`
 }
 
 func MustLoad() *Config {

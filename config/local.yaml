@@ -9,5 +9,5 @@ http_server:
 smtp:
   host: smtp.gmail.com
   port: 587
-  user: k1m4rti@gmail.com
+  user: ${SMTP_EMAIL}
   password: ${SMTP_PASSWORD}
