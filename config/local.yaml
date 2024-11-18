@@ -2,7 +2,7 @@ env: local
 
 http_server:
   address: localhost
-  port: 8082
+  port: 10000
   timeout: 4s
   idle_timeout: 60s
 
