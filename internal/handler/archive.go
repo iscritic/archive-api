@@ -1,13 +1,23 @@
-package handlers
+package handler
 
 import (
-	"github.com/iscritic/archive-api/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/iscritic/archive-api/internal/service"
 )
 
-func GetArchiveInformation(c *gin.Context) {
+type ArchiveHandler struct {
+	archiveService service.ArchiveService
+}
+
+func NewArchiveHandler(archiveService service.ArchiveService) *ArchiveHandler {
+	return &ArchiveHandler{
+		archiveService: archiveService,
+	}
+}
+
+func (h *ArchiveHandler) GetArchiveInformation(c *gin.Context) {
 	fileHeader, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a file in 'file' field."})
@@ -21,7 +31,7 @@ func GetArchiveInformation(c *gin.Context) {
 	}
 	defer file.Close()
 
-	archiveInfo, err := services.GetArchiveInfo(file, fileHeader.Filename, fileHeader.Size)
+	archiveInfo, err := h.archiveService.GetArchiveInfo(file, fileHeader.Filename, fileHeader.Size)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -30,7 +40,7 @@ func GetArchiveInformation(c *gin.Context) {
 	c.JSON(http.StatusOK, archiveInfo)
 }
 
-func CreateArchive(c *gin.Context) {
+func (h *ArchiveHandler) CreateArchive(c *gin.Context) {
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide files in 'files[]' field."})
@@ -43,7 +53,7 @@ func CreateArchive(c *gin.Context) {
 		return
 	}
 
-	archiveData, err := services.CreateZipArchive(files)
+	archiveData, err := h.archiveService.CreateZipArchive(files)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

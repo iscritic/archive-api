@@ -26,7 +26,6 @@ type SMTPConfig struct {
 	Port     int    `yaml:"port" env:"SMTP_PORT" env-default:"587"`
 	User     string `yaml:"user" env:"SMTP_USER" env-default:"your_email@example.com"`
 	Password string `yaml:"password" env:"SMTP_PASSWORD"`
-	Sender   string `yaml:"sender" env:"SMTP_SENDER" env-default:"your_email@example.com"`
 }
 
 func MustLoad() *Config {

@@ -22,6 +22,9 @@ func NewServer(cfg *config.Config) *Server {
 }
 
 func (s *Server) Run() error {
+
+	s.registerRoutes()
+
 	addr := fmt.Sprintf("%s:%d", s.cfg.HTTPServer.Address, s.cfg.HTTPServer.Port)
 
 	srv := &http.Server{

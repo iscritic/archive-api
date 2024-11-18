@@ -1,21 +1,32 @@
-package services
+package service
 
 import (
 	"archive/zip"
 	"bytes"
 	"errors"
 	"github.com/iscritic/archive-api/internal/utils"
-	"github.com/iscritic/archive-api/models"
 	"io"
 	"mime/multipart"
+
+	"github.com/iscritic/archive-api/models"
 )
 
-func GetArchiveInfo(file multipart.File, filename string, fileSize int64) (*models.ArchiveInfo, error) {
+type ArchiveService interface {
+	GetArchiveInfo(file multipart.File, filename string, fileSize int64) (*models.ArchiveInfo, error)
+	CreateZipArchive(files []*multipart.FileHeader) ([]byte, error)
+}
+
+type archiveService struct{}
+
+func NewArchiveService() ArchiveService {
+	return &archiveService{}
+}
+
+func (s *archiveService) GetArchiveInfo(file multipart.File, filename string, fileSize int64) (*models.ArchiveInfo, error) {
 	if !utils.IsArchive(filename) {
 		return nil, errors.New("Oops! The file you uploaded is not an archive. Please try again with a valid archive file.")
 	}
 
-	// Read the uploaded file into a buffer
 	buf := new(bytes.Buffer)
 	_, err := io.Copy(buf, file)
 	if err != nil {
@@ -51,7 +62,7 @@ func GetArchiveInfo(file multipart.File, filename string, fileSize int64) (*mode
 	return archiveInfo, nil
 }
 
-func CreateZipArchive(files []*multipart.FileHeader) ([]byte, error) {
+func (s *archiveService) CreateZipArchive(files []*multipart.FileHeader) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	zipWriter := zip.NewWriter(buf)
 

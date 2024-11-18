@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/iscritic/archive-api/internal/config"
 	"github.com/iscritic/archive-api/internal/server"
 	"github.com/joho/godotenv"
@@ -17,6 +18,7 @@ func main() {
 
 	cfg := config.MustLoad()
 
+	fmt.Println(cfg)
 	srv := server.NewServer(cfg)
 
 	slog.Info("Starting API server...")
