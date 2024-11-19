@@ -1,6 +1,6 @@
 module github.com/iscritic/archive-api
 
-go 1.23.2
+go 1.18
 
 require (
 	github.com/gin-gonic/gin v1.10.0

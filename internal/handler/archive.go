@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/iscritic/archive-api/internal/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,11 @@ func (h *ArchiveHandler) GetArchiveInformation(c *gin.Context) {
 			slog.String("field", "file"),
 		)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a file in 'file' field."})
+		return
+	}
+
+	if utils.IsValidSize(fileHeader, utils.MaxArchiveSize) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File size is too small"})
 		return
 	}
 

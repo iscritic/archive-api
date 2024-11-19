@@ -46,6 +46,16 @@ func (h *EmailHandler) SendFileToEmails(c *gin.Context) {
 		return
 	}
 
+	subject := c.PostForm("subject")
+	if strings.TrimSpace(subject) == "" {
+		subject = "File Attachment"
+	}
+
+	body := c.PostForm("body")
+	if strings.TrimSpace(body) == "" {
+		body = "Hello, please find the attached document."
+	}
+
 	emailList := strings.Split(emails, ",")
 
 	contentType := header.Header.Get("Content-Type")
@@ -80,8 +90,8 @@ func (h *EmailHandler) SendFileToEmails(c *gin.Context) {
 
 		err := h.EmailService.SendEmail(
 			email,
-			"File Attachment",
-			"Hello, please find the attached document.",
+			subject,
+			body,
 			header.Filename,
 			bytes.NewReader(fileBuffer.Bytes()),
 			contentType,

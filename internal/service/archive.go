@@ -5,10 +5,10 @@ import (
 	"bytes"
 	"errors"
 	"github.com/iscritic/archive-api/internal/utils"
-	"io"
-	"mime/multipart"
-
 	"github.com/iscritic/archive-api/models"
+	"io"
+	"log/slog"
+	"mime/multipart"
 )
 
 type ArchiveService interface {
@@ -69,6 +69,14 @@ func (s *archiveService) CreateZipArchive(files []*multipart.FileHeader) ([]byte
 	for _, fileHeader := range files {
 		if !utils.IsValidMIMEType(fileHeader.Header.Get("Content-Type")) {
 			return nil, errors.New("One or more files have unsupported formats. Please upload files with allowed MIME types.")
+		}
+
+		if !utils.IsValidSize(fileHeader, utils.MaxIndividualFileSize) {
+			slog.Warn("File size exceeds the limit",
+				slog.String("filename", fileHeader.Filename),
+				slog.Int64("size", fileHeader.Size),
+			)
+			return nil, errors.New("File size exceeds the limit (20MB) per file")
 		}
 
 		file, err := fileHeader.Open()

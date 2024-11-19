@@ -2,6 +2,7 @@ package utils
 
 import (
 	"mime"
+	"mime/multipart"
 	"path/filepath"
 )
 
@@ -16,6 +17,11 @@ var allowedEmailMIMETypes = map[string]bool{
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
 	"application/pdf": true,
 }
+
+const (
+	MaxArchiveSize        = 100 * 1024 * 1024
+	MaxIndividualFileSize = 20 * 1024 * 1024
+)
 
 func IsValidMIMEType(mimeType string) bool {
 	return allowedMIMETypes[mimeType]
@@ -33,4 +39,8 @@ func GetMIMETypeFromFilename(filename string) string {
 func IsArchive(filename string) bool {
 	ext := filepath.Ext(filename)
 	return ext == ".zip"
+}
+
+func IsValidSize(fileHeader *multipart.FileHeader, maxSize int64) bool {
+	return fileHeader.Size <= maxSize
 }
