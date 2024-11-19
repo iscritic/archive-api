@@ -31,8 +31,8 @@ func (h *ArchiveHandler) GetArchiveInformation(c *gin.Context) {
 		return
 	}
 
-	if utils.IsValidSize(fileHeader, utils.MaxArchiveSize) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "File size is too small"})
+	if !utils.IsValidSize(fileHeader, utils.MaxArchiveSize) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File size is exceed"})
 		return
 	}
 
